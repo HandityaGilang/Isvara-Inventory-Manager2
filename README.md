@@ -1,4 +1,4 @@
-# Aplikasi Inventory Baju
+# Aplikasi Isvara Inventory Manager2 V.1.0.4
 
 Aplikasi desktop untuk manajemen inventory baju yang dibangun dengan Electron, React, dan SQLite. Aplikasi ini mendukung import/export Excel/CSV, manajemen SKU, sistem peringatan stok, dan dashboard lengkap.
 
@@ -105,4 +105,4 @@ src/
 
 ## License
 
-MIT License
+Made By Handitya Gilang (Garda) 
