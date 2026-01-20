@@ -14,6 +14,7 @@ import LoginScreen from './components/LoginScreen';
 import Settings from './components/Settings';
 import UserManagement from './components/UserManagement';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 function AppContent() {
   const { user } = useAuth();
@@ -66,7 +67,7 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      <div className="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-navy-950 transition-colors duration-300">
         <Sidebar user={user} />
         <div className="flex-1 overflow-auto min-w-0">
           <Routes>
@@ -98,7 +99,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </AuthProvider>
   );
 }

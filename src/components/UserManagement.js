@@ -101,18 +101,18 @@ const UserManagement = () => {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Users className="text-blue-600" />
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50 flex items-center gap-2">
+            <Users className="text-blue-600 dark:text-blue-400" />
             Manajemen Pengguna
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 dark:text-navy-200 mt-1">
             Kelola akun pengguna dan hak akses aplikasi.
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-200">
+        <div className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 p-4 rounded-lg mb-6 border border-red-200 dark:border-red-800">
           {error}
         </div>
       )}
@@ -120,57 +120,57 @@ const UserManagement = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Section */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="bg-white dark:bg-navy-800 rounded-xl shadow-sm border border-gray-200 dark:border-navy-700 p-6 sticky top-6">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
               {isEditing ? <Edit2 size={20} /> : <UserPlus size={20} />}
               {isEditing ? 'Edit Pengguna' : 'Tambah Pengguna Baru'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-1">
                   Username
                 </label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                  <Users className="absolute left-3 top-2.5 text-gray-400 dark:text-navy-400" size={18} />
                   <input
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({...formData, username: e.target.value})}
                     disabled={isEditing} // Cannot change username when editing
-                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isEditing ? 'bg-gray-100 text-gray-500' : 'border-gray-300'}`}
+                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white dark:border-navy-600 ${isEditing ? 'bg-gray-100 text-gray-500 dark:bg-navy-700 dark:text-navy-400' : 'border-gray-300'}`}
                     placeholder="Masukkan username"
                   />
                 </div>
-                {isEditing && <p className="text-xs text-gray-500 mt-1">Username tidak dapat diubah.</p>}
+                {isEditing && <p className="text-xs text-gray-500 dark:text-navy-400 mt-1">Username tidak dapat diubah.</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-1">
                   Password
                 </label>
                 <div className="relative">
-                  <Key className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                  <Key className="absolute left-3 top-2.5 text-gray-400 dark:text-navy-400" size={18} />
                   <input
                     type="text" 
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                     placeholder="Masukkan password"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-1">
                   Role (Hak Akses)
                 </label>
                 <div className="relative">
-                  <Shield className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                  <Shield className="absolute left-3 top-2.5 text-gray-400 dark:text-navy-400" size={18} />
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({...formData, role: e.target.value})}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-navy-900 dark:text-white"
                   >
                     {roles.map(role => (
                       <option key={role} value={role}>{role}</option>
@@ -183,7 +183,7 @@ const UserManagement = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <Save size={18} />
                   {loading ? 'Menyimpan...' : 'Simpan'}
@@ -193,7 +193,7 @@ const UserManagement = () => {
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 border border-gray-300 dark:border-navy-600 text-gray-700 dark:text-navy-200 rounded-lg hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors"
                   >
                     <X size={18} />
                   </button>
@@ -205,51 +205,51 @@ const UserManagement = () => {
 
         {/* List Section */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-navy-800 rounded-xl shadow-sm border border-gray-200 dark:border-navy-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                  <tr className="bg-gray-50 dark:bg-navy-900 border-b border-gray-200 dark:border-navy-700 text-xs uppercase text-gray-500 dark:text-yellow-50 font-semibold">
                     <th className="px-6 py-4">Username</th>
                     <th className="px-6 py-4">Role</th>
                     <th className="px-6 py-4">Password</th>
                     <th className="px-6 py-4 text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-navy-700">
                   {users.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                      <td colSpan="4" className="px-6 py-8 text-center text-gray-500 dark:text-navy-400">
                         Belum ada data pengguna.
                       </td>
                     </tr>
                   ) : (
                     users.map((u) => (
-                      <tr key={u.username} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-900">
+                      <tr key={u.username} className="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                           {u.username}
                           {u.username === user?.username && (
-                            <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
+                            <span className="ml-2 px-2 py-0.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-200 text-xs rounded-full">
                               You
                             </span>
                           )}
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            ${u.role === 'OWNER' ? 'bg-purple-100 text-purple-800' : 
-                              u.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' : 
-                              'bg-gray-100 text-gray-800'}`}>
+                            ${u.role === 'OWNER' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200' : 
+                              u.role === 'ADMIN' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200' : 
+                              'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>
                             {u.role}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-500 font-mono text-sm">
+                        <td className="px-6 py-4 text-gray-500 dark:text-navy-300 font-mono text-sm">
                           {u.password}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleEdit(u)}
-                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                               title="Edit"
                             >
                               <Edit2 size={16} />
@@ -257,7 +257,7 @@ const UserManagement = () => {
                             {u.username !== 'owner' && u.username !== user?.username && (
                               <button
                                 onClick={() => handleDelete(u.username)}
-                                className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                 title="Hapus"
                               >
                                 <Trash2 size={16} />

@@ -61,6 +61,59 @@ const ProductForm = ({ onOpenCalculator }) => {
   const [categories, setCategories] = useState(['Kaos', 'Kemeja', 'Jaket', 'Celana', 'Dress', 'Aksesoris']);
   const [distributionChannels, setDistributionChannels] = useState(['Shopee', 'Tokopedia', 'Zalora', 'Website', 'Offline Store']);
 
+  const [inputModes, setInputModes] = useState({
+    discount: 'rp',
+    tax: 'rp',
+    commission: 'rp',
+    platform_commission: 'rp'
+  });
+
+  const [percentValues, setPercentValues] = useState({
+    discount: '',
+    tax: '',
+    commission: '',
+    platform_commission: ''
+  });
+
+  const toggleInputMode = (field) => {
+    setInputModes(prev => {
+      const newMode = prev[field] === 'rp' ? 'percent' : 'rp';
+      
+      if (newMode === 'percent') {
+        const price = formData.price || 0;
+        const value = formData[field] || 0;
+        const percent = price > 0 ? ((value / price) * 100).toFixed(2) : '0';
+        setPercentValues(p => ({ ...p, [field]: percent.replace(/\.00$/, '') }));
+      }
+      
+      return { ...prev, [field]: newMode };
+    });
+  };
+
+  const handleFinancialChange = (e, field) => {
+    const { value } = e.target;
+    
+    if (inputModes[field] === 'percent') {
+      let cleanValue = value.replace(/[^0-9.]/g, '');
+      
+      // Validation: Clamp between 0 and 100
+      const numVal = parseFloat(cleanValue);
+      if (numVal > 100) cleanValue = '100';
+      if (numVal < 0) cleanValue = '0';
+
+      setPercentValues(prev => ({ ...prev, [field]: cleanValue }));
+      
+      const percent = parseFloat(cleanValue) || 0;
+      const price = formData.price || 0;
+      const rpValue = Math.round((percent / 100) * price);
+      
+      setFormData(prev => ({ ...prev, [field]: rpValue }));
+    } else {
+      const numericValue = parseRupiah(value);
+      setFormData(prev => ({ ...prev, [field]: numericValue }));
+    }
+  };
+
   const addActivityLogEntry = async (entry) => {
     try {
       const now = new Date();
@@ -195,6 +248,20 @@ const ProductForm = ({ onOpenCalculator }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'price') {
+       const newPrice = parseRupiah(value);
+       setPercentValues(prev => {
+         const next = { ...prev };
+         ['discount', 'tax', 'commission'].forEach(field => {
+            const val = formData[field] || 0;
+            const pct = newPrice > 0 ? ((val / newPrice) * 100).toFixed(2) : '0';
+            next[field] = pct.replace(/\.00$/, '');
+         });
+         return next;
+       });
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: name.includes('size_')
@@ -471,28 +538,28 @@ const ProductForm = ({ onOpenCalculator }) => {
       <div className="mb-6">
         <button
           onClick={() => navigate('/inventory')}
-          className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
+          className="flex items-center text-gray-600 hover:text-gray-800 dark:text-navy-300 dark:hover:text-navy-100 mb-4 transition-colors"
         >
           <ArrowLeft size={20} className="mr-2" />
           Kembali ke Inventory
         </button>
         
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50">
           {isEdit ? 'Edit Produk' : 'Tambah Produk Baru'}
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-navy-200">
           {isEdit ? 'Edit detail produk' : 'Tambahkan produk baru ke inventory'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 border border-gray-100 dark:border-navy-700">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Informasi Dasar</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Informasi Dasar</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Seller SKU *
                 </label>
                 <input
@@ -500,19 +567,19 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="seller_sku"
                   value={formData.seller_sku}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.seller_sku ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 ${
+                    errors.seller_sku ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
                   }`}
                   placeholder="Contoh: TSH-BLK-001"
                 />
                 {errors.seller_sku && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
                     <AlertCircle size={14} className="mr-1" />
                     {errors.seller_sku}
                   </p>
                 )}
                 {formData.seller_sku && !errors.seller_sku && (
-                  <p className="mt-1 text-sm text-green-600 flex items-center">
+                  <p className="mt-1 text-sm text-green-600 dark:text-green-400 flex items-center">
                     <CheckCircle size={14} className="mr-1" />
                     SKU tersedia
                   </p>
@@ -520,7 +587,7 @@ const ProductForm = ({ onOpenCalculator }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Shop SKU
                 </label>
                 <input
@@ -528,13 +595,13 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="shop_sku"
                   value={formData.shop_sku}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
                   placeholder="Contoh: TSH001"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Style Name *
                 </label>
                 <input
@@ -542,19 +609,19 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="style_name"
                   value={formData.style_name}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.style_name ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 ${
+                    errors.style_name ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
                   }`}
                   placeholder="Contoh: Kaos Basic Hitam"
                 />
                 {errors.style_name && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
                     <AlertCircle size={14} className="mr-1" />
                     {errors.style_name}
                   </p>
                 )}
                 {formData.style_name && !errors.style_name && (
-                  <p className="mt-1 text-sm text-green-600 flex items-center">
+                  <p className="mt-1 text-sm text-green-600 dark:text-green-400 flex items-center">
                     <CheckCircle size={14} className="mr-1" />
                     Nama style tersedia
                   </p>
@@ -562,15 +629,15 @@ const ProductForm = ({ onOpenCalculator }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Kategori *
                 </label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.category ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white ${
+                    errors.category ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
                   }`}
                 >
                   <option value="">Pilih Kategori</option>
@@ -579,19 +646,19 @@ const ProductForm = ({ onOpenCalculator }) => {
                   ))}
                 </select>
                 {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Channel Distribusi
                 </label>
                 <select
                   name="distribution_channel"
                   value={formData.distribution_channel}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white"
                 >
                   <option value="">Pilih Channel</option>
                   {distributionChannels.map(channel => (
@@ -603,17 +670,17 @@ const ProductForm = ({ onOpenCalculator }) => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Gambar Produk</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Gambar Produk</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Gambar Produk (Maks 5)
                 </label>
                 
                 <div className="grid grid-cols-3 gap-4">
                   {/* Render existing images */}
                   {productImages.map((img, index) => (
-                    <div key={index} className="relative aspect-square border rounded-lg overflow-hidden group">
+                    <div key={index} className="relative aspect-square border dark:border-navy-600 rounded-lg overflow-hidden group">
                       <img src={img.previewUrl} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
                       <button
                         type="button"
@@ -627,9 +694,9 @@ const ProductForm = ({ onOpenCalculator }) => {
 
                   {/* Render upload button if less than 5 */}
                   {productImages.length < 5 && (
-                    <label className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
-                      <Upload size={24} className="text-gray-400 mb-2" />
-                      <span className="text-xs text-gray-500">Upload</span>
+                    <label className="aspect-square border-2 border-dashed border-gray-300 dark:border-navy-600 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+                      <Upload size={24} className="text-gray-400 dark:text-navy-400 mb-2" />
+                      <span className="text-xs text-gray-500 dark:text-navy-300">Upload</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -641,13 +708,13 @@ const ProductForm = ({ onOpenCalculator }) => {
 
                   {/* Render remaining empty slots */}
                   {[...Array(Math.max(0, 5 - productImages.length - 1))].map((_, i) => (
-                    <div key={`empty-${i}`} className="aspect-square border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-center">
-                      <span className="text-xs text-gray-300">Kosong</span>
+                    <div key={`empty-${i}`} className="aspect-square border border-gray-200 dark:border-navy-700 rounded-lg bg-gray-50 dark:bg-navy-900 flex items-center justify-center">
+                      <span className="text-xs text-gray-300 dark:text-navy-500">Kosong</span>
                     </div>
                   ))}
                 </div>
                 
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-gray-500 dark:text-navy-400">
                   Format: JPG, PNG. Maks 5 gambar. Gambar akan dikompres otomatis.
                 </p>
               </div>
@@ -656,11 +723,11 @@ const ProductForm = ({ onOpenCalculator }) => {
 
           {/* Pricing Information */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Informasi Harga</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Informasi Harga</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Harga Jual (Rp) *
                 </label>
                 <input
@@ -668,17 +735,17 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="price"
                   value={formatRupiah(formData.price)}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.price ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 ${
+                    errors.price ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
                   }`}
                 />
                 {errors.price && (
-                  <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.price}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Harga Cost (Rp)
                 </label>
                 <input
@@ -686,12 +753,12 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="cost"
                   value={formatRupiah(formData.cost)}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Biaya Pengiriman (Rp)
                 </label>
                 <input
@@ -699,51 +766,96 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="shipping_cost"
                   value={formatRupiah(formData.shipping_cost)}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Komisi Platform (Rp)
-                </label>
-                <input
-                  type="text"
-                  name="platform_commission"
-                  value={formatRupiah(formData.platform_commission)}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200">
+                    Komisi Platform
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => toggleInputMode('platform_commission')}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                  >
+                    Input {inputModes.platform_commission === 'rp' ? 'Persen (%)' : 'Rupiah (Rp)'}
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="platform_commission"
+                    value={inputModes.platform_commission === 'rp' ? formatRupiah(formData.platform_commission) : percentValues.platform_commission}
+                    onChange={(e) => handleFinancialChange(e, 'platform_commission')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
+                    placeholder={inputModes.platform_commission === 'percent' ? '0' : '0'}
+                  />
+                  {inputModes.platform_commission === 'percent' && (
+                    <span className="absolute right-3 top-2 text-gray-500 dark:text-navy-400">%</span>
+                  )}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Diskon (Rp)
-                </label>
-                <input
-                  type="text"
-                  name="discount"
-                  value={formatRupiah(formData.discount)}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200">
+                    Diskon
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => toggleInputMode('discount')}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                  >
+                    Input {inputModes.discount === 'rp' ? 'Persen (%)' : 'Rupiah (Rp)'}
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="discount"
+                    value={inputModes.discount === 'rp' ? formatRupiah(formData.discount) : percentValues.discount}
+                    onChange={(e) => handleFinancialChange(e, 'discount')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
+                    placeholder={inputModes.discount === 'percent' ? '0' : '0'}
+                  />
+                  {inputModes.discount === 'percent' && (
+                    <span className="absolute right-3 top-2 text-gray-500 dark:text-navy-400">%</span>
+                  )}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pajak (Rp)
-                </label>
-                <input
-                  type="text"
-                  name="tax"
-                  value={formatRupiah(formData.tax)}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200">
+                    Pajak
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => toggleInputMode('tax')}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                  >
+                    Input {inputModes.tax === 'rp' ? 'Persen (%)' : 'Rupiah (Rp)'}
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="tax"
+                    value={inputModes.tax === 'rp' ? formatRupiah(formData.tax) : percentValues.tax}
+                    onChange={(e) => handleFinancialChange(e, 'tax')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
+                    placeholder={inputModes.tax === 'percent' ? '0' : '0'}
+                  />
+                  {inputModes.tax === 'percent' && (
+                    <span className="absolute right-3 top-2 text-gray-500 dark:text-navy-400">%</span>
+                  )}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Biaya Admin (Rp)
                 </label>
                 <input
@@ -751,26 +863,41 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name="admin_fee"
                   value={formatRupiah(formData.admin_fee)}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Komisi (Rp)
-                </label>
-                <input
-                  type="text"
-                  name="commission"
-                  value={formatRupiah(formData.commission)}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200">
+                    Komisi
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => toggleInputMode('commission')}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                  >
+                    Input {inputModes.commission === 'rp' ? 'Persen (%)' : 'Rupiah (Rp)'}
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="commission"
+                    value={inputModes.commission === 'rp' ? formatRupiah(formData.commission) : percentValues.commission}
+                    onChange={(e) => handleFinancialChange(e, 'commission')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
+                    placeholder={inputModes.commission === 'percent' ? '0' : '0'}
+                  />
+                  {inputModes.commission === 'percent' && (
+                    <span className="absolute right-3 top-2 text-gray-500 dark:text-navy-400">%</span>
+                  )}
+                </div>
               </div>
 
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-gray-700">Nett Receive: </p>
-                <p className="text-lg font-bold text-green-600">
+              <div className="bg-gray-50 dark:bg-navy-900 p-3 rounded-lg border border-gray-200 dark:border-navy-700">
+                <p className="text-sm font-medium text-gray-700 dark:text-navy-200">Nett Receive: </p>
+                <p className="text-lg font-bold text-green-600 dark:text-green-400">
                   Rp {nettReceive.toLocaleString('id-ID')}
                 </p>
                 {onOpenCalculator && (
@@ -784,7 +911,7 @@ const ProductForm = ({ onOpenCalculator }) => {
                       discount: formData.discount,
                       tax: formData.tax
                     })}
-                    className="mt-2 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+                    className="mt-2 w-full bg-blue-600 dark:bg-blue-700 text-white py-2 px-4 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center justify-center"
                   >
                     <Calculator size={16} className="mr-2" />
                     Buka Kalkulator Profit
@@ -797,12 +924,12 @@ const ProductForm = ({ onOpenCalculator }) => {
 
         {/* Size Information */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Stok per Ukuran</h3>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Stok per Ukuran</h3>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {['S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'Onesize'].map(size => (
               <div key={size}>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
                   Size {size}
                 </label>
                 <input
@@ -810,17 +937,17 @@ const ProductForm = ({ onOpenCalculator }) => {
                   name={`size_${size.toLowerCase()}`}
                   value={formData[`size_${size.toLowerCase()}`]}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
                   min="0"
                 />
               </div>
             ))}
           </div>
 
-          <div className="mt-4 bg-blue-50 p-3 rounded-lg">
-            <p className="text-sm font-medium text-gray-700">Total Stok: </p>
+          <div className="mt-4 bg-blue-50 dark:bg-navy-900 p-3 rounded-lg border border-blue-100 dark:border-navy-700">
+            <p className="text-sm font-medium text-gray-700 dark:text-navy-200">Total Stok: </p>
             <p className={`text-lg font-bold ${
-              totalStock === 0 ? 'text-red-600' : totalStock < 3 ? 'text-yellow-600' : 'text-green-600'
+              totalStock === 0 ? 'text-red-600 dark:text-red-400' : totalStock < 3 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'
             }`}>
               {totalStock} pcs
             </p>
@@ -830,14 +957,14 @@ const ProductForm = ({ onOpenCalculator }) => {
         {/* Status and Notes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
               Status
             </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white"
             >
               {statusOptions.map(status => (
                 <option key={status} value={status}>{status}</option>
@@ -846,7 +973,7 @@ const ProductForm = ({ onOpenCalculator }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-2">
               Catatan
             </label>
             <textarea
@@ -854,7 +981,7 @@ const ProductForm = ({ onOpenCalculator }) => {
               value={formData.notes}
               onChange={handleChange}
               rows="3"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
               placeholder="Tambahkan catatan jika diperlukan..."
             />
           </div>
@@ -863,11 +990,11 @@ const ProductForm = ({ onOpenCalculator }) => {
         {/* Submit Button */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
           {hasTriedSubmit && errorEntries.length > 0 && (
-            <div className="relative group inline-flex items-center text-xs text-red-600 cursor-default">
+            <div className="relative group inline-flex items-center text-xs text-red-600 dark:text-red-400 cursor-default">
               <AlertCircle size={16} className="mr-1" />
               <span>Ada {errorEntries.length} field yang belum diisi dengan benar</span>
-              <div className="absolute left-0 bottom-full mb-2 w-72 bg-white border border-red-200 rounded-lg shadow-lg p-3 text-xs text-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none">
-                <p className="font-semibold text-red-600 mb-1">Perlu dicek:</p>
+              <div className="absolute left-0 bottom-full mb-2 w-72 bg-white dark:bg-navy-800 border border-red-200 dark:border-red-800 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-navy-200 opacity-0 group-hover:opacity-100 pointer-events-none z-10">
+                <p className="font-semibold text-red-600 dark:text-red-400 mb-1">Perlu dicek:</p>
                 <ul className="list-disc list-inside space-y-1">
                   {errorEntries.map(([field, message]) => (
                     <li key={field}>{message}</li>
@@ -880,14 +1007,14 @@ const ProductForm = ({ onOpenCalculator }) => {
             <button
               type="button"
               onClick={() => navigate('/inventory')}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="px-6 py-2 border border-gray-300 dark:border-navy-600 rounded-lg text-gray-700 dark:text-navy-200 hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
             >
               <Save size={20} className="mr-2" />
               {isSubmitting ? 'Menyimpan...' : 'Simpan Produk'}

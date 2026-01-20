@@ -180,15 +180,15 @@ const Inventory = () => {
   }, [products, searchTerm, statusFilter, categoryFilter]);
 
   const getStockColor = (stock) => {
-    if (stock === 0) return 'bg-red-100 text-red-800';
-    if (stock < 3) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-green-100 text-green-800';
+    if (stock === 0) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+    if (stock < 3) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+    return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
   };
 
   const getRowColor = (stock) => {
-    if (stock === 0) return 'bg-red-50';
-    if (stock < 3) return 'bg-yellow-50';
-    return '';
+    if (stock === 0) return 'bg-red-50 dark:bg-red-900/20';
+    if (stock < 3) return 'bg-yellow-50 dark:bg-yellow-900/20';
+    return 'hover:bg-gray-50 dark:hover:bg-navy-700';
   };
 
   const calculateMargin = (product) => {
@@ -215,8 +215,8 @@ const Inventory = () => {
   };
 
   const getMarginColor = (margin) => {
-    if (margin >= 0) return 'text-green-600';
-    return 'text-red-600';
+    if (margin >= 0) return 'text-green-600 dark:text-green-400';
+    return 'text-red-600 dark:text-red-400';
   };
 
   const categories = ['all', ...new Set(products.map(p => p.category))];
@@ -314,13 +314,13 @@ const Inventory = () => {
       <div className="mb-6">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Manajemen Inventory</h1>
-            <p className="text-gray-600">Kelola semua produk baju dalam sistem</p>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50">Manajemen Inventory</h1>
+            <p className="text-gray-600 dark:text-navy-200">Kelola semua produk baju dalam sistem</p>
           </div>
           {user?.role !== 'STAFF' && (
             <Link
               to="/add-product"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center w-full md:w-auto"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center w-full md:w-auto transition-colors"
             >
               <Plus size={20} className="mr-2" />
               Tambah Barang
@@ -329,10 +329,10 @@ const Inventory = () => {
         </div>
 
         {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-4 mb-6 transition-colors">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-2">
                 Cari Produk
               </label>
               <div className="relative">
@@ -340,7 +340,7 @@ const Inventory = () => {
                 <input
                   type="text"
                   placeholder="Cari SKU, nama, atau kategori..."
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -348,11 +348,11 @@ const Inventory = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-2">
                 Filter Status
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -365,11 +365,11 @@ const Inventory = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-2">
                 Filter Kategori
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
@@ -384,41 +384,41 @@ const Inventory = () => {
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-lg shadow-md">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md transition-colors">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-navy-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Gambar
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     SKU
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Nama Produk
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Kategori
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Stok
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Harga
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Margin
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Aksi
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-navy-800 divide-y divide-gray-200 dark:divide-navy-700">
                 {filteredProducts.map((product) => (
                   <tr 
                     key={product.id} 
@@ -441,8 +441,8 @@ const Inventory = () => {
                         )}
                       </div>
                       {hoveredProductId === product.id && (
-                        <div className="absolute z-20 left-20 top-0 bg-white shadow-xl rounded-lg p-3 w-64 border border-gray-100">
-                          <div className="w-full h-32 rounded-md overflow-hidden bg-gray-100 mb-3">
+                        <div className="absolute z-20 left-20 top-0 bg-white dark:bg-navy-800 shadow-xl rounded-lg p-3 w-64 border border-gray-100 dark:border-navy-700">
+                          <div className="w-full h-32 rounded-md overflow-hidden bg-gray-100 dark:bg-navy-900 mb-3">
                             <img
                               src={
                                 product.images && product.images.length > 0
@@ -454,20 +454,20 @@ const Inventory = () => {
                             />
                           </div>
                           <div className="space-y-1">
-                            <p className="text-sm font-semibold text-gray-800">
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white">
                               {product.style_name}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-navy-300">
                               {product.seller_sku} • {product.category}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-navy-300">
                               Stok: {product.total_stock} pcs
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-navy-300">
                               Harga: Rp {product.price.toLocaleString('id-ID')}
                             </p>
                             {product.distribution_channel && (
-                              <p className="text-xs text-blue-600">
+                              <p className="text-xs text-blue-600 dark:text-blue-400">
                                 Distribusi: {product.distribution_channel}
                               </p>
                             )}
@@ -477,21 +477,21 @@ const Inventory = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {product.seller_sku}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-navy-300">
                           {product.shop_sku}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {product.style_name}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">
                         {product.category}
                       </span>
                     </td>
@@ -563,13 +563,13 @@ const Inventory = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       {user?.role !== 'STAFF' && (
                         <div className="flex space-x-2">
-                          <Link to={`/edit-product/${product.id}`} className="text-blue-600 hover:text-blue-900">
+                          <Link to={`/edit-product/${product.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                             <Edit size={16} />
                           </Link>
                           {(user?.role === 'OWNER' || user?.role === 'ADMIN') && (
                             <button 
                               onClick={() => deleteProduct(product.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -585,8 +585,8 @@ const Inventory = () => {
 
           {filteredProducts.length === 0 && (
             <div className="text-center py-12">
-              <Package size={48} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-500">Tidak ada produk yang ditemukan</p>
+              <Package size={48} className="mx-auto text-gray-400 dark:text-navy-600 mb-4" />
+              <p className="text-gray-500 dark:text-navy-300">Tidak ada produk yang ditemukan</p>
             </div>
           )}
         </div>

@@ -5,7 +5,9 @@ import {
   TrendingUp, 
   DollarSign,
   BarChart3,
-  PieChart
+  PieChart,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { 
   PieChart as RechartsPieChart, 
@@ -21,8 +23,10 @@ import {
   CartesianGrid
 } from 'recharts';
 import { db } from '../services/db';
+import { useTheme } from '../context/ThemeContext';
 
 const Dashboard = ({ user }) => {
+  const { theme, toggleTheme } = useTheme();
   const [stats, setStats] = useState({
     totalProducts: 0,
     lowStockProducts: 0,
@@ -235,15 +239,30 @@ const Dashboard = ({ user }) => {
     });
   }, [products]);
 
-  const StatCard = ({ icon: Icon, label, value, color }) => (
-    <div className="bg-white rounded-lg shadow-md p-4">
+  // Aesthetic Card for Highlighted Stats
+  const AestheticCard = ({ icon: Icon, label, value, gradient }) => (
+    <div className={`rounded-xl shadow-lg p-6 text-white ${gradient} transform transition-all hover:scale-105`}>
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="text-sm font-medium opacity-90 mb-1">{label}</p>
+          <h3 className="text-2xl font-bold">{value}</h3>
+        </div>
+        <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+          <Icon size={24} className="text-white" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const StatCard = ({ icon: Icon, label, value, color, iconColor }) => (
+    <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-4 transition-colors">
       <div className="flex items-center space-x-3">
         <div className={`p-2 rounded-full ${color}`}>
-          <Icon size={20} className="text-white" />
+          <Icon size={20} className={iconColor || "text-white"} />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-medium text-gray-500 truncate">{label}</p>
-          <p className="text-lg md:text-xl font-bold text-gray-800 break-words">
+          <p className="text-xs font-medium text-gray-500 dark:text-navy-200 truncate">{label}</p>
+          <p className="text-lg md:text-xl font-bold text-gray-800 dark:text-yellow-50 break-words">
             {value}
           </p>
         </div>
@@ -268,59 +287,74 @@ const Dashboard = ({ user }) => {
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          Dashboard Inventory
-        </h1>
-        <p className="text-gray-600">
-          Ringkasan kondisi stok dan inventory baju
-        </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50 mb-2">
+            Dashboard Inventory
+          </h1>
+          <p className="text-gray-600 dark:text-navy-200">
+            Ringkasan kondisi stok dan inventory baju
+          </p>
+        </div>
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full bg-white dark:bg-navy-800 shadow-sm text-gray-600 dark:text-yellow-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          title={theme === 'dark' ? 'Ganti ke Light Mode' : 'Ganti ke Dark Mode'}
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      {/* Aesthetic Cards Section (Owner Only) */}
+      {user?.role !== 'STAFF' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <AestheticCard
+            icon={DollarSign}
+            label="Total Nilai Stok"
+            value={`Rp ${stats.totalStockValue.toLocaleString('id-ID')}`}
+            gradient="bg-gradient-to-r from-emerald-500 to-teal-600"
+          />
+          <AestheticCard
+            icon={TrendingUp}
+            label="Rata-rata Margin"
+            value={`${stats.averageMarginPercentage.toFixed(1)}%`}
+            gradient="bg-gradient-to-r from-blue-500 to-indigo-600"
+          />
+        </div>
+      )}
+
+      {/* Standard Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatCard
           icon={Package}
           label="Total Produk"
           value={stats.totalProducts}
-          color="bg-blue-500"
+          color="bg-blue-100 dark:bg-blue-900"
+          iconColor="text-blue-600 dark:text-blue-300"
         />
         <StatCard
           icon={AlertTriangle}
           label="Stok Menipis"
           value={stats.lowStockProducts}
-          color="bg-yellow-500"
+          color="bg-yellow-100 dark:bg-yellow-900"
+          iconColor="text-yellow-600 dark:text-yellow-300"
         />
         <StatCard
           icon={AlertTriangle}
           label="Stok Habis"
           value={stats.outOfStockProducts}
-          color="bg-red-500"
+          color="bg-red-100 dark:bg-red-900"
+          iconColor="text-red-600 dark:text-red-300"
         />
-        {user?.role !== 'STAFF' && (
-          <>
-            <StatCard
-              icon={DollarSign}
-              label="Total Nilai Stok"
-              value={`Rp ${stats.totalStockValue.toLocaleString('id-ID')}`}
-              color="bg-green-500"
-            />
-            <StatCard
-              icon={BarChart3}
-              label="Rata-rata Margin"
-              value={`${stats.averageMarginPercentage.toFixed(1)}%`}
-              color="bg-blue-500"
-            />
-          </>
-        )}
       </div>
 
       {/* Profit/Loss Visualization (Owner Only) */}
       {(user?.role === 'OWNER' || user?.mode === 'OFFLINE') && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
             <div className="flex items-center mb-4">
-              <PieChart size={20} className="text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-800">Komposisi Produk (Profit vs Loss)</h3>
+              <PieChart size={20} className="text-blue-600 dark:text-blue-400 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50">Komposisi Produk (Profit vs Loss)</h3>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -341,17 +375,20 @@ const Dashboard = ({ user }) => {
                     <Cell fill="#00C49F" />
                     <Cell fill="#FF8042" />
                   </Pie>
-                  <Tooltip formatter={(value) => [`${value} produk`, 'Jumlah']} />
+                  <Tooltip 
+                    formatter={(value) => [`${value} produk`, 'Jumlah']} 
+                    contentStyle={{ backgroundColor: theme === 'dark' ? '#102a43' : '#fff', borderColor: theme === 'dark' ? '#243b53' : '#e5e7eb', color: theme === 'dark' ? '#fef3c7' : '#000' }}
+                  />
                   <Legend />
                 </RechartsPieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
             <div className="flex items-center mb-4">
-              <BarChart3 size={20} className="text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-800">Total Profit vs Loss</h3>
+              <BarChart3 size={20} className="text-blue-600 dark:text-blue-400 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50">Total Profit vs Loss</h3>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -362,10 +399,13 @@ const Dashboard = ({ user }) => {
                   ]}
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis tickFormatter={(value) => `Rp${(value / 1000000).toFixed(0)}jt`} />
-                  <Tooltip formatter={(value) => [`Rp ${value.toLocaleString('id-ID')}`, 'Nilai']} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#374151' : '#e5e7eb'} />
+                  <XAxis dataKey="name" stroke={theme === 'dark' ? '#9ca3af' : '#4b5563'} />
+                  <YAxis tickFormatter={(value) => `Rp${(value / 1000000).toFixed(0)}jt`} stroke={theme === 'dark' ? '#9ca3af' : '#4b5563'} />
+                  <Tooltip 
+                    formatter={(value) => [`Rp ${value.toLocaleString('id-ID')}`, 'Nilai']} 
+                    contentStyle={{ backgroundColor: theme === 'dark' ? '#102a43' : '#fff', borderColor: theme === 'dark' ? '#243b53' : '#e5e7eb', color: theme === 'dark' ? '#fef3c7' : '#000' }}
+                  />
                   <Legend />
                   <Bar dataKey="amount" name="Nilai (Rp)" radius={[4, 4, 0, 0]}>
                     <Cell fill="#00C49F" />
@@ -379,13 +419,13 @@ const Dashboard = ({ user }) => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50 mb-4">
             Produk yang Perlu Restock
           </h3>
           <div className="space-y-3">
             {lowStockProducts.length === 0 ? (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-navy-200">
                 Belum ada produk dengan stok menipis atau habis.
               </p>
             ) : (
@@ -393,18 +433,18 @@ const Dashboard = ({ user }) => {
                 <div
                   key={product.id}
                   className={`flex justify-between items-center p-3 rounded-lg ${
-                    (product.total_stock || 0) === 0 ? 'bg-red-50' : 'bg-yellow-50'
+                    (product.total_stock || 0) === 0 ? 'bg-red-50 dark:bg-red-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'
                   }`}
                 >
                   <div>
-                    <p className="font-medium text-gray-800">{product.style_name}</p>
-                    <p className="text-sm text-gray-600">{product.seller_sku}</p>
+                    <p className="font-medium text-gray-800 dark:text-yellow-50">{product.style_name}</p>
+                    <p className="text-sm text-gray-600 dark:text-navy-100">{product.seller_sku}</p>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
                       (product.total_stock || 0) === 0
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                     }`}
                   >
                     {(product.total_stock || 0) === 0
@@ -417,26 +457,26 @@ const Dashboard = ({ user }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50 mb-4">
             Aktivitas Terbaru
           </h3>
           <div className="space-y-3">
             {recentActivities.length === 0 ? (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-navy-200">
                 Belum ada aktivitas terbaru.
               </p>
             ) : (
               recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <div className="bg-blue-100 p-2 rounded-full mr-3">
-                    <BarChart3 size={16} className="text-blue-600" />
+                <div key={activity.id} className="flex items-center p-3 bg-gray-50 dark:bg-navy-700/50 rounded-lg transition-colors">
+                  <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full mr-3">
+                    <BarChart3 size={16} className="text-blue-600 dark:text-blue-300" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-800">
+                    <p className="text-sm text-gray-800 dark:text-yellow-50">
                       <span className="font-medium">{activity.action}</span> - {activity.item}
                     </p>
-                    <p className="text-xs text-gray-500">{activity.date}</p>
+                    <p className="text-xs text-gray-500 dark:text-navy-200">{activity.date}</p>
                   </div>
                 </div>
               ))
@@ -445,13 +485,13 @@ const Dashboard = ({ user }) => {
         </div>
       </div>
 
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+      <div className="mt-8 bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50">
               Produk Best Seller
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-navy-200">
               Daftar produk dengan penjualan tertinggi
             </p>
           </div>
@@ -459,10 +499,10 @@ const Dashboard = ({ user }) => {
             <button
               type="button"
               onClick={() => setBestsellerFilter('week')}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 bestsellerFilter === 'week'
                   ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                  : 'bg-white dark:bg-navy-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-navy-600'
               }`}
             >
               Minggu ini
@@ -470,10 +510,10 @@ const Dashboard = ({ user }) => {
             <button
               type="button"
               onClick={() => setBestsellerFilter('month')}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 bestsellerFilter === 'month'
                   ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                  : 'bg-white dark:bg-navy-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-navy-600'
               }`}
             >
               Bulan ini
@@ -481,10 +521,10 @@ const Dashboard = ({ user }) => {
             <button
               type="button"
               onClick={() => setBestsellerFilter('threeMonths')}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 bestsellerFilter === 'threeMonths'
                   ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                  : 'bg-white dark:bg-navy-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-navy-600'
               }`}
             >
               3 bulan terakhir
@@ -496,16 +536,16 @@ const Dashboard = ({ user }) => {
           {currentBestsellers.map((item) => (
             <div
               key={item.id}
-              className="min-w-[140px] max-w-[160px] bg-gray-50 rounded-lg p-3 flex-shrink-0"
+              className="min-w-[140px] max-w-[160px] bg-gray-50 dark:bg-navy-700/50 rounded-lg p-3 flex-shrink-0 transition-colors"
             >
-              <div className="w-full h-24 rounded-md overflow-hidden bg-gray-100 mb-2">
+              <div className="w-full h-24 rounded-md overflow-hidden bg-gray-100 dark:bg-navy-600 mb-2">
                 <img
                   src={item.imageUrl}
                   alt={item.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-xs font-medium text-gray-800 line-clamp-2">
+              <p className="text-xs font-medium text-gray-800 dark:text-yellow-50 line-clamp-2">
                 {item.name}
               </p>
             </div>

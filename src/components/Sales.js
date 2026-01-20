@@ -108,15 +108,15 @@ const Sales = () => {
 
   const getTypeBadge = (type) => {
     if (type === 'sale') {
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
     }
-    return 'bg-red-100 text-red-800';
+    return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
   };
 
   const getStockColor = (stock) => {
-    if (stock === 0) return 'bg-red-100 text-red-800';
-    if (stock < 3) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-blue-100 text-blue-800';
+    if (stock === 0) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+    if (stock < 3) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+    return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
   };
 
   const totalTransactions = filteredRecords.length;
@@ -260,19 +260,19 @@ const Sales = () => {
       <div className="mb-6">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Penjualan dan Retur</h1>
-            <p className="text-gray-600">Pantau pergerakan stok keluar dan masuk</p>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50">Penjualan dan Retur</h1>
+            <p className="text-gray-600 dark:text-navy-200">Pantau pergerakan stok keluar dan masuk</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               onClick={() => openModal('sale')}
             >
               <PlusCircle size={18} className="mr-2" />
               Tambah Penjualan Manual
             </button>
             <button
-              className="flex items-center px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100"
+              className="flex items-center px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/40 transition-colors"
               onClick={() => openModal('return')}
             >
               <ArrowUpCircle size={18} className="mr-2" />
@@ -281,10 +281,10 @@ const Sales = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-4 mb-6 transition-colors">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Cari SKU atau Nama</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-2">Cari SKU atau Nama</label>
               <div className="relative">
                 <Search
                   size={20}
@@ -293,7 +293,7 @@ const Sales = () => {
                 <input
                   type="text"
                   placeholder="TSH-BLK-001, Kaos Basic Hitam..."
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -301,14 +301,14 @@ const Sales = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipe Transaksi</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-2">Tipe Transaksi</label>
               <div className="relative">
                 <Filter
                   size={18}
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                 />
                 <select
-                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 w-full px-4 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                 >
@@ -320,22 +320,22 @@ const Sales = () => {
             </div>
 
             <div className="flex items-end">
-              <div className="w-full bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-700">
+              <div className="w-full bg-gray-50 dark:bg-navy-900 rounded-lg px-3 py-2 text-xs text-gray-700 dark:text-navy-200 border border-gray-100 dark:border-navy-700">
                 <div className="flex justify-between mb-1">
                   <span>Total transaksi</span>
-                  <span className="font-semibold">{totalTransactions}</span>
+                  <span className="font-semibold text-gray-900 dark:text-yellow-50">{totalTransactions}</span>
                 </div>
                 <div className="flex justify-between mb-1">
                   <span>Qty keluar (penjualan)</span>
-                  <span className="font-semibold text-green-700">{totalSaleQty}</span>
+                  <span className="font-semibold text-green-700 dark:text-green-400">{totalSaleQty}</span>
                 </div>
                 <div className="flex justify-between mb-1">
                   <span>Qty masuk (retur)</span>
-                  <span className="font-semibold text-red-700">{totalReturnQty}</span>
+                  <span className="font-semibold text-red-700 dark:text-red-400">{totalReturnQty}</span>
                 </div>
-                <div className="flex justify-between border-t border-gray-200 pt-1 mt-1">
+                <div className="flex justify-between border-t border-gray-200 dark:border-navy-700 pt-1 mt-1">
                   <span>Pergerakan bersih stok</span>
-                  <span className="font-semibold">
+                  <span className="font-semibold text-gray-900 dark:text-yellow-50">
                     {netMovement > 0 ? '-' : netMovement < 0 ? '+' : ''}{Math.abs(netMovement)} pcs
                   </span>
                 </div>
@@ -344,44 +344,44 @@ const Sales = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md transition-colors">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-navy-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Waktu
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     SKU
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Produk
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Tipe
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Qty
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Sisa Stok
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                     Keterangan
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-navy-800 divide-y divide-gray-200 dark:divide-navy-700">
                 {filteredRecords.map((record) => (
-                  <tr key={record.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={record.id} className="hover:bg-gray-50 dark:hover:bg-navy-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-navy-200">
                       {record.date}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{record.seller_sku}</div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">{record.seller_sku}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-navy-100">
                       {record.style_name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -398,7 +398,7 @@ const Sales = () => {
                         {record.type === 'sale' ? 'Penjualan' : 'Retur'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-navy-100">
                       {record.qty}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -410,7 +410,7 @@ const Sales = () => {
                         {record.remaining_stock} pcs
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-navy-200">
                       {record.remark}
                     </td>
                   </tr>
@@ -421,25 +421,25 @@ const Sales = () => {
 
           {filteredRecords.length === 0 && (
             <div className="text-center py-12">
-              <Package size={48} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-500">Belum ada transaksi penjualan atau retur</p>
+              <Package size={48} className="mx-auto text-gray-400 dark:text-navy-400 mb-4" />
+              <p className="text-gray-500 dark:text-navy-200">Belum ada transaksi penjualan atau retur</p>
             </div>
           )}
         </div>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-30">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-5">
-            <h2 className="text-lg font-semibold text-gray-800 mb-1">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30 backdrop-blur-sm">
+          <div className="bg-white dark:bg-navy-800 rounded-lg shadow-xl w-full max-w-md p-5 transition-colors border border-gray-200 dark:border-navy-700">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-yellow-50 mb-1">
               {modalType === 'sale' ? 'Tambah Penjualan Manual' : 'Input Retur Manual'}
             </h2>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-gray-500 dark:text-navy-200 mb-4">
               Pilih produk dan jumlah, stok akan {modalType === 'sale' ? 'berkurang' : 'bertambah'} otomatis.
             </p>
 
             {products.length === 0 && (
-              <div className="flex items-center text-xs text-red-600 mb-3">
+              <div className="flex items-center text-xs text-red-600 dark:text-red-400 mb-3">
                 <AlertCircle size={14} className="mr-1" />
                 <span>Belum ada produk di inventory. Tambahkan produk terlebih dahulu.</span>
               </div>
@@ -447,14 +447,14 @@ const Sales = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
                   Produk
                 </label>
                 <button
                   type="button"
                   className={`w-full px-3 py-2 border rounded-lg text-left flex items-center justify-between ${
-                    modalErrors.seller_sku ? 'border-red-500' : 'border-gray-300'
-                  } ${products.length === 0 ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : 'bg-white hover:bg-gray-50'}`}
+                    modalErrors.seller_sku ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
+                  } ${products.length === 0 ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : 'bg-white dark:bg-navy-900 hover:bg-gray-50 dark:hover:bg-navy-700'} transition-colors`}
                   onClick={() => {
                     if (products.length === 0) return;
                     setProductSearchTerm('');
@@ -462,7 +462,7 @@ const Sales = () => {
                   }}
                   disabled={products.length === 0}
                 >
-                  <span className="text-sm text-gray-700">
+                  <span className={`text-sm ${products.length === 0 ? '' : 'text-gray-700 dark:text-white'}`}>
                     {(() => {
                       const selected = products.find(
                         (p) => p.seller_sku === modalData.seller_sku
@@ -471,7 +471,7 @@ const Sales = () => {
                       return `${selected.seller_sku} • ${selected.style_name}`;
                     })()}
                   </span>
-                  <span className="ml-2 text-xs text-blue-600">
+                  <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">
                     Pilih
                   </span>
                 </button>
@@ -482,14 +482,14 @@ const Sales = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
                     Qty
                   </label>
                   <input
                     type="number"
                     min="1"
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      modalErrors.qty ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-navy-900 dark:text-white ${
+                      modalErrors.qty ? 'border-red-500' : 'border-gray-300 dark:border-navy-600'
                     }`}
                     value={modalData.qty}
                     onChange={(e) => handleModalChange('qty', e.target.value)}
@@ -499,22 +499,22 @@ const Sales = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
                     Tipe
                   </label>
-                  <div className="px-3 py-2 border border-gray-200 rounded-lg text-xs bg-gray-50">
+                  <div className="px-3 py-2 border border-gray-200 dark:border-navy-600 rounded-lg text-xs bg-gray-50 dark:bg-navy-900 text-gray-600 dark:text-navy-200">
                     {modalType === 'sale' ? 'Penjualan (stok berkurang)' : 'Retur (stok bertambah)'}
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
                   Keterangan
                 </label>
                 <textarea
                   rows="2"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   value={modalData.remark}
                   onChange={(e) => handleModalChange('remark', e.target.value)}
                   placeholder={modalType === 'sale' ? 'Contoh: Order Shopee #12345' : 'Contoh: Retur ukuran tidak sesuai'}
@@ -526,7 +526,7 @@ const Sales = () => {
               <button
                 type="button"
                 onClick={closeModal}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-navy-600 rounded-lg text-sm text-gray-700 dark:text-navy-100 hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors"
                 disabled={modalSubmitting}
               >
                 Batal
@@ -548,26 +548,26 @@ const Sales = () => {
         </div>
       )}
       {isModalOpen && isProductPickerOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-5">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-navy-800 rounded-lg shadow-xl w-full max-w-2xl p-5 border border-gray-200 dark:border-navy-700 transition-colors">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Pilih Produk dari Inventory</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-yellow-50">Pilih Produk dari Inventory</h3>
+                <p className="text-xs text-gray-500 dark:text-navy-200">
                   Cari berdasarkan SKU, nama produk, atau kategori.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsProductPickerOpen(false)}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-sm text-gray-500 dark:text-navy-300 hover:text-gray-700 dark:hover:text-white"
               >
                 Tutup
               </button>
             </div>
 
             <div className="mb-3">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 dark:text-navy-100 mb-1">
                 Cari Produk
               </label>
               <div className="relative">
@@ -577,7 +577,7 @@ const Sales = () => {
                 />
                 <input
                   type="text"
-                  className="pl-9 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="pl-9 pr-3 py-2 w-full border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white dark:placeholder-navy-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="TSH-BLK-001, Kaos Basic Hitam, Kaos..."
                   value={productSearchTerm}
                   onChange={(e) => setProductSearchTerm(e.target.value)}
@@ -585,34 +585,34 @@ const Sales = () => {
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-lg max-h-80 overflow-y-auto">
+            <div className="border border-gray-200 dark:border-navy-700 rounded-lg max-h-80 overflow-y-auto bg-white dark:bg-navy-900">
               {filteredProductList.length === 0 ? (
-                <div className="py-6 text-center text-xs text-gray-500">
+                <div className="py-6 text-center text-xs text-gray-500 dark:text-navy-300">
                   Tidak ada produk yang cocok dengan pencarian.
                 </div>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 dark:bg-navy-800">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                         SKU
                       </th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                         Nama
                       </th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                         Kategori
                       </th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-yellow-50 uppercase tracking-wider">
                         Stok
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-gray-100 dark:divide-navy-700">
                     {filteredProductList.map((p) => (
                       <tr
                         key={p.id || p.seller_sku}
-                        className="hover:bg-blue-50 cursor-pointer"
+                        className="hover:bg-blue-50 dark:hover:bg-navy-700 cursor-pointer"
                         onClick={() => {
                           setModalData((prev) => ({
                             ...prev,
@@ -625,18 +625,18 @@ const Sales = () => {
                           setIsProductPickerOpen(false);
                         }}
                       >
-                        <td className="px-4 py-2 whitespace-nowrap text-gray-800">
+                        <td className="px-4 py-2 whitespace-nowrap text-gray-800 dark:text-white">
                           {p.seller_sku}
                         </td>
-                        <td className="px-4 py-2 text-gray-700">
+                        <td className="px-4 py-2 text-gray-700 dark:text-navy-100">
                           {p.style_name}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap">
-                          <span className="inline-flex px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs">
+                          <span className="inline-flex px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs">
                             {p.category || '-'}
                           </span>
                         </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-gray-700">
+                        <td className="px-4 py-2 whitespace-nowrap text-gray-700 dark:text-navy-100">
                           {p.total_stock || 0} pcs
                         </td>
                       </tr>

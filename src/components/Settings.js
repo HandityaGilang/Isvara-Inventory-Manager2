@@ -99,20 +99,20 @@ const Settings = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">Pengaturan Master Data</h1>
-      <p className="text-gray-600 mb-6">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-yellow-50 mb-2">Pengaturan Master Data</h1>
+      <p className="text-gray-600 dark:text-navy-200 mb-6">
         Kelola daftar kategori produk dan channel distribusi yang digunakan di form dan dashboard.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-5">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-5 border border-gray-100 dark:border-navy-700">
           <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-blue-100 mr-2">
-              <Tags size={18} className="text-blue-600" />
+            <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/50 mr-2">
+              <Tags size={18} className="text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">Kategori Produk</h2>
-              <p className="text-xs text-gray-500">Digunakan pada form produk</p>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Kategori Produk</h2>
+              <p className="text-xs text-gray-500 dark:text-navy-300">Digunakan pada form produk</p>
             </div>
           </div>
 
@@ -122,12 +122,12 @@ const Settings = () => {
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               placeholder="Tambah kategori baru"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
             />
             <button
               type="button"
               onClick={handleAddCategory}
-              className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700"
+              className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               <Plus size={16} />
             </button>
@@ -137,32 +137,32 @@ const Settings = () => {
             {categories.map((cat) => (
               <span
                 key={cat}
-                className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs"
+                className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 text-xs"
               >
                 {cat}
                 <button
                   type="button"
                   onClick={() => handleRemoveCategory(cat)}
-                  className="ml-2 text-blue-500 hover:text-blue-700"
+                  className="ml-2 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-200"
                 >
                   <Trash2 size={12} />
                 </button>
               </span>
             ))}
             {categories.length === 0 && (
-              <p className="text-xs text-gray-400">Belum ada kategori. Tambahkan minimal satu.</p>
+              <p className="text-xs text-gray-400 dark:text-navy-400">Belum ada kategori. Tambahkan minimal satu.</p>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-5">
+        <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-5 border border-gray-100 dark:border-navy-700">
           <div className="flex items-center mb-4">
-            <div className="p-2 rounded-full bg-purple-100 mr-2">
-              <Share2 size={18} className="text-purple-600" />
+            <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900/50 mr-2">
+              <Share2 size={18} className="text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">Channel Distribusi</h2>
-              <p className="text-xs text-gray-500">Contoh: Shopee, Zalora, Offline Store</p>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Channel Distribusi</h2>
+              <p className="text-xs text-gray-500 dark:text-navy-300">Contoh: Shopee, Zalora, Offline Store</p>
             </div>
           </div>
 
@@ -172,12 +172,12 @@ const Settings = () => {
               value={newChannel}
               onChange={(e) => setNewChannel(e.target.value)}
               placeholder="Tambah channel baru"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-navy-900 dark:text-white dark:placeholder-navy-400"
             />
             <button
               type="button"
               onClick={handleAddChannel}
-              className="px-3 py-2 bg-purple-600 text-white rounded-lg flex items-center justify-center hover:bg-purple-700"
+              className="px-3 py-2 bg-purple-600 text-white rounded-lg flex items-center justify-center hover:bg-purple-700 dark:bg-purple-600 dark:hover:bg-purple-700"
             >
               <Plus size={16} />
             </button>
@@ -187,20 +187,20 @@ const Settings = () => {
             {channels.map((ch) => (
               <span
                 key={ch}
-                className="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs"
+                className="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-200 text-xs"
               >
                 {ch}
                 <button
                   type="button"
                   onClick={() => handleRemoveChannel(ch)}
-                  className="ml-2 text-purple-500 hover:text-purple-700"
+                  className="ml-2 text-purple-500 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-200"
                 >
                   <Trash2 size={12} />
                 </button>
               </span>
             ))}
             {channels.length === 0 && (
-              <p className="text-xs text-gray-400">Belum ada channel. Tambahkan minimal satu.</p>
+              <p className="text-xs text-gray-400 dark:text-navy-400">Belum ada channel. Tambahkan minimal satu.</p>
             )}
           </div>
         </div>

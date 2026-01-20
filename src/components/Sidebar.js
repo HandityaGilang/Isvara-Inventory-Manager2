@@ -82,12 +82,12 @@ const Sidebar = ({ user }) => {
   );
 
   return (
-    <div className="w-full md:w-64 bg-white shadow-lg flex-shrink-0 flex flex-col h-screen">
-      <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-gray-800">
+    <div className="w-full md:w-64 bg-white dark:bg-navy-900 shadow-lg flex-shrink-0 flex flex-col h-screen transition-colors">
+      <div className="p-6 border-b dark:border-navy-800">
+        <h1 className="text-xl font-bold text-gray-800 dark:text-yellow-50">
           Isvara Inventory
         </h1>
-        <p className="text-xs text-gray-500 mt-1 uppercase tracking-wide">
+        <p className="text-xs text-gray-500 dark:text-navy-200 mt-1 uppercase tracking-wide">
           {user?.mode} MODE • {user?.role}
         </p>
       </div>
@@ -104,8 +104,8 @@ const Sidebar = ({ user }) => {
                   to={item.path}
                   className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                      ? 'bg-blue-100 dark:bg-navy-700 text-blue-700 dark:text-blue-300'
+                      : 'text-gray-600 dark:text-navy-100 hover:bg-gray-100 dark:hover:bg-navy-800 hover:text-gray-800 dark:hover:text-yellow-50'
                   }`}
                 >
                   <Icon size={20} className="mr-3" />
@@ -117,16 +117,16 @@ const Sidebar = ({ user }) => {
         </ul>
       </nav>
       
-      <div className="p-4 border-t">
+      <div className="p-4 border-t dark:border-navy-800">
         <div className="flex items-center justify-between mb-4 px-4">
           <div className="flex flex-col">
-            <span className="font-semibold text-gray-800 text-sm">{user?.username}</span>
-            <span className="text-xs text-gray-500">Logged In</span>
+            <span className="font-semibold text-gray-800 dark:text-yellow-50 text-sm">{user?.username}</span>
+            <span className="text-xs text-gray-500 dark:text-navy-200">Logged In</span>
           </div>
         </div>
         <button
           onClick={logout}
-          className="w-full flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+          className="w-full flex items-center px-4 py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
         >
           <LogOut size={20} className="mr-3" />
           <span className="font-medium">Keluar</span>
