@@ -230,7 +230,21 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
   };
 
   const handleInputChange = (field, value) => {
-    const numericValue = value === '' ? 0 : parseFloat(value) || 0;
+    let finalValue = value;
+
+    // Validation for percentage modes
+    let isPercent = false;
+    if (field === 'platform_commission' && inputMode === 'percent') isPercent = true;
+    if (field === 'discount' && discountMode === 'percent') isPercent = true;
+    if (field === 'tax' && taxMode === 'percent') isPercent = true;
+
+    if (isPercent) {
+      const numVal = parseFloat(value);
+      if (numVal > 100) finalValue = 100;
+      if (numVal < 0) finalValue = 0;
+    }
+
+    const numericValue = finalValue === '' ? 0 : parseFloat(finalValue) || 0;
     setFormData(prev => ({
       ...prev,
       [field]: numericValue
@@ -242,15 +256,15 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white dark:bg-navy-800 rounded-lg shadow-md p-6 transition-colors">
       <div className="flex items-center mb-6">
         <Calculator size={24} className="text-blue-600 mr-2" />
-        <h3 className="text-xl font-semibold text-gray-800">Kalkulator Profit Margin</h3>
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-yellow-50">Kalkulator Profit Margin</h3>
       </div>
 
       {/* Product Selector */}
       <div className="relative mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
           Pilih Produk dari Inventory (Opsional)
         </label>
         <div className="relative">
@@ -263,14 +277,14 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
             }}
             onFocus={() => setShowDropdown(true)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Cari nama produk atau SKU..."
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
         </div>
         
         {showDropdown && searchTerm && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-10 w-full mt-1 bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-lg shadow-lg max-h-60 overflow-auto">
             {storedProducts
               .filter(p => 
                 (p.style_name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -280,11 +294,11 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
                 <button
                   key={p.id}
                   onClick={() => selectProduct(p)}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 flex justify-between items-center border-b last:border-0"
+                  className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-navy-700 flex justify-between items-center border-b dark:border-navy-700 last:border-0"
                 >
                   <div>
-                    <div className="font-medium text-gray-800">{p.style_name}</div>
-                    <div className="text-xs text-gray-500">{p.seller_sku}</div>
+                    <div className="font-medium text-gray-800 dark:text-white">{p.style_name}</div>
+                    <div className="text-xs text-gray-500 dark:text-navy-200">{p.seller_sku}</div>
                   </div>
                   <div className="text-sm text-blue-600 font-medium">
                     Stok: {p.total_stock}
@@ -295,7 +309,7 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
                 (p.style_name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
                 (p.seller_sku || '').toLowerCase().includes(searchTerm.toLowerCase())
               ).length === 0 && (
-                <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                <div className="px-4 py-3 text-sm text-gray-500 dark:text-navy-200 text-center">
                   Produk tidak ditemukan
                 </div>
               )}
@@ -306,53 +320,53 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
       {/* Input Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
             HPP (Cost of Goods)
           </label>
           <input
             type="number"
             value={formData.cost}
             onChange={(e) => handleInputChange('cost', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="0"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
             Harga Jual (Selling Price)
           </label>
           <input
             type="number"
             value={formData.price}
             onChange={(e) => handleInputChange('price', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="0"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
             Biaya Expedisi
           </label>
           <input
             type="number"
             value={formData.shipping_cost}
             onChange={(e) => handleInputChange('shipping_cost', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="0"
           />
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-navy-100">
               Komisi Platform
             </label>
             <button
               type="button"
               onClick={toggleInputMode}
-              className="flex items-center text-xs text-blue-600 hover:text-blue-800"
+              className="flex items-center text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
             >
               {inputMode === 'rp' ? (
                 <>
@@ -371,24 +385,24 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
             type="number"
             value={formData.platform_commission}
             onChange={(e) => handleInputChange('platform_commission', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder={inputMode === 'rp' ? "0" : "0.00"}
             step={inputMode === 'rp' ? "1" : "0.01"}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-navy-200 mt-1">
             {inputMode === 'rp' ? 'Nominal Rupiah' : 'Persentase dari Harga Jual'}
           </p>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-navy-100">
               Discount
             </label>
             <button
               type="button"
               onClick={() => setDiscountMode(prev => prev === 'rp' ? 'percent' : 'rp')}
-              className="flex items-center text-xs text-blue-600 hover:text-blue-800"
+              className="flex items-center text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
             >
               {discountMode === 'rp' ? (
                 <>
@@ -407,24 +421,24 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
             type="number"
             value={formData.discount}
             onChange={(e) => handleInputChange('discount', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder={discountMode === 'rp' ? "0" : "0.00"}
             step={discountMode === 'rp' ? "1" : "0.01"}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-navy-200 mt-1">
             {discountMode === 'rp' ? 'Nominal Rupiah' : 'Persentase dari Harga Jual'}
           </p>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-navy-100">
               Pajak
             </label>
             <button
               type="button"
               onClick={() => setTaxMode(prev => prev === 'rp' ? 'percent' : 'rp')}
-              className="flex items-center text-xs text-blue-600 hover:text-blue-800"
+              className="flex items-center text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
             >
               {taxMode === 'rp' ? (
                 <>
@@ -443,24 +457,24 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
             type="number"
             value={formData.tax}
             onChange={(e) => handleInputChange('tax', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder={taxMode === 'rp' ? "0" : "0.00"}
             step={taxMode === 'rp' ? "1" : "0.01"}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-navy-200 mt-1">
             {taxMode === 'rp' ? 'Nominal Rupiah' : 'Persentase dari Harga Jual'}
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-navy-100 mb-1">
             Biaya Admin Lainnya
           </label>
           <input
             type="number"
             value={formData.admin_fee}
             onChange={(e) => handleInputChange('admin_fee', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-navy-600 dark:bg-navy-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="0"
           />
         </div>
@@ -480,8 +494,8 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
         <div className="space-y-6">
           {/* Pie Chart Visualization */}
           {chartData.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-800 mb-4 text-center">Visualisasi Komposisi Biaya & Profit</h4>
+            <div className="bg-gray-50 dark:bg-navy-900 rounded-lg p-4 border border-gray-100 dark:border-navy-700">
+              <h4 className="font-semibold text-gray-800 dark:text-yellow-50 mb-4 text-center">Visualisasi Komposisi Biaya & Profit</h4>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -501,8 +515,9 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
                     </Pie>
                     <Tooltip 
                       formatter={(value) => [`Rp ${value.toLocaleString('id-ID')}`, 'Nilai']}
+                      contentStyle={{ backgroundColor: '#102a43', borderColor: '#243b53', color: '#fef3c7' }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ color: '#fef3c7' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -512,67 +527,62 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
           {/* Results Summary */}
           <div className={`p-4 rounded-lg border ${
             results.is_profitable 
-              ? 'bg-green-50 border-green-200' 
-              : 'bg-red-50 border-red-200'
+              ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
+              : 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800'
           }`}>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-gray-800">Hasil Perhitungan</h4>
+              <h4 className="font-semibold text-gray-800 dark:text-yellow-50">Hasil Perhitungan</h4>
               {results.is_profitable ? (
-                <TrendingUp size={20} className="text-green-600" />
+                <TrendingUp size={20} className="text-green-600 dark:text-green-400" />
               ) : (
-                <TrendingDown size={20} className="text-red-600" />
+                <TrendingDown size={20} className="text-red-600 dark:text-red-400" />
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-gray-600">Total Biaya:</span>
-                <p className="font-medium">Rp {results.total_cost.toLocaleString('id-ID')}</p>
+                <span className="text-gray-600 dark:text-navy-200">Total Biaya:</span>
+                <p className="font-medium dark:text-white">Rp {results.total_cost.toLocaleString('id-ID')}</p>
               </div>
 
               <div>
-                <span className="text-gray-600">Pendapatan Bersih:</span>
-                <p className={`font-medium ${
-                  results.is_profitable ? 'text-green-600' : 'text-red-600'
+                <span className="text-gray-600 dark:text-navy-200">Nett Receive:</span>
+                <p className={`font-bold text-lg ${
+                  results.is_profitable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
                   Rp {results.nett_receive.toLocaleString('id-ID')}
                 </p>
               </div>
 
               <div>
-                <span className="text-gray-600">Margin Profit:</span>
+                <span className="text-gray-600 dark:text-navy-200">Margin (%):</span>
                 <p className={`font-medium ${
-                  results.is_profitable ? 'text-green-600' : 'text-red-600'
+                  results.is_profitable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
                   {results.margin_percentage.toFixed(2)}%
                 </p>
               </div>
-
+              
               <div>
-                <span className="text-gray-600">Status:</span>
-                <p className={`font-medium ${
-                  results.is_profitable ? 'text-green-600' : 'text-red-600'
+                <span className="text-gray-600 dark:text-navy-200">Status:</span>
+                <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                  results.is_profitable 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                 }`}>
-                  {results.is_profitable ? 'PROFIT' : 'RUGI'}
-                </p>
+                  {results.is_profitable ? 'PROFIT' : 'LOSS'}
+                </span>
               </div>
-            </div>
-
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <p className="text-xs text-gray-500">
-                Formula: (Harga Jual - Total Biaya) / Harga Jual * 100
-                {(inputMode === 'percent' || discountMode === 'percent' || taxMode === 'percent') && ' • Nilai yang bertanda % dihitung berdasarkan Harga Jual'}
-              </p>
             </div>
           </div>
 
           {/* Save Changes Button */}
           {selectedProductId && (
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-lg p-4">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 dark:text-navy-200">
                   <p>Anda sedang mengedit parameter untuk produk:</p>
-                  <p className="font-medium text-gray-800">{searchTerm}</p>
+                  <p className="font-medium text-gray-800 dark:text-white">{searchTerm}</p>
                 </div>
                 <button
                   onClick={handleUpdateProduct}
@@ -583,12 +593,12 @@ const ProfitCalculator = ({ product: initialProduct, onCalculate }) => {
                 </button>
               </div>
               {saveStatus === 'success' && (
-                <div className="mt-3 p-2 bg-green-50 text-green-700 text-sm rounded text-center">
+                <div className="mt-3 p-2 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm rounded text-center">
                   Perubahan berhasil disimpan ke inventory!
                 </div>
               )}
               {saveStatus === 'error' && (
-                <div className="mt-3 p-2 bg-red-50 text-red-700 text-sm rounded text-center">
+                <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded text-center">
                   Gagal menyimpan perubahan. Silakan coba lagi.
                 </div>
               )}

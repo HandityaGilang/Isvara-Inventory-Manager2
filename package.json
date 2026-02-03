@@ -1,6 +1,6 @@
 {
   "name": "isvara-inventory-manager",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "homepage": ".",
   "description": "Aplikasi desktop inventory baju dengan Electron, React, dan SQLite",
   "main": "public/electron.js",
@@ -53,7 +53,7 @@
     "appId": "com.isvara.inventory",
     "productName": "Isvara Inventory Manager",
     "directories": {
-      "output": "release_final"
+      "output": "release_build"
     },
     "files": [
       "build/**/*",
@@ -63,7 +63,7 @@
     ],
     "win": {
       "target": "nsis",
-      "sign": false
+      "icon": "public/icon.ico"
     },
     "nsis": {
       "oneClick": false,

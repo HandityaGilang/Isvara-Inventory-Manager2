@@ -50,11 +50,11 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 relative draggable-region">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-navy-950 p-4 relative draggable-region">
       {/* Custom Close Button for Frameless Window */}
       <button 
         onClick={handleClose}
-        className="absolute top-4 right-4 p-2 text-gray-500 hover:text-red-500 transition-colors z-50 no-drag"
+        className="absolute top-4 right-4 p-2 text-gray-500 dark:text-navy-400 hover:text-red-500 dark:hover:text-red-400 transition-colors z-50 no-drag"
         title="Close Application"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -75,12 +75,12 @@ const LoginScreen = () => {
         }
       `}</style>
 
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row min-h-[500px] no-drag">
+      <div className="bg-white dark:bg-navy-900 rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row min-h-[500px] no-drag border border-gray-200 dark:border-navy-700">
         <div
           className={`w-full md:w-1/2 p-12 text-white flex flex-col justify-center transition-all duration-500 ${
             activeTab === 'offline'
-              ? 'bg-gradient-to-br from-gray-700 to-gray-900'
-              : 'bg-gray-900/60'
+              ? 'bg-gradient-to-br from-gray-700 to-gray-900 dark:from-navy-800 dark:to-navy-950'
+              : 'bg-gray-900/60 dark:bg-navy-900/60'
           }`}
           style={
             activeTab === 'online'
@@ -117,18 +117,18 @@ const LoginScreen = () => {
         </div>
 
         {/* Right Side: Action Forms */}
-        <div className="w-full md:w-1/2 p-12 flex flex-col justify-center bg-white">
+        <div className="w-full md:w-1/2 p-12 flex flex-col justify-center bg-white dark:bg-navy-900">
           {activeTab === 'offline' ? (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <WifiOff size={40} className="text-gray-500" />
+              <div className="w-20 h-20 bg-gray-100 dark:bg-navy-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                <WifiOff size={40} className="text-gray-500 dark:text-navy-300" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Offline Access</h2>
-              <p className="text-gray-500 mb-8">Masuk sebagai Local Owner. Data tersimpan di perangkat ini.</p>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-yellow-50 mb-2">Offline Access</h2>
+              <p className="text-gray-500 dark:text-navy-300 mb-8">Masuk sebagai Local Owner. Data tersimpan di perangkat ini.</p>
               <button 
                 onClick={handleOfflineLogin}
                 disabled={loading}
-                className="w-full py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-gray-900 dark:bg-navy-700 text-white rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-navy-600 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center">
@@ -149,41 +149,41 @@ const LoginScreen = () => {
           ) : (
             <form onSubmit={handleOnlineLogin}>
               <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Wifi size={40} className="text-blue-500" />
+                <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Wifi size={40} className="text-blue-500 dark:text-blue-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Online Login</h2>
-                <p className="text-gray-500">Masuk sebagai Owner, Admin, atau Staff</p>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-yellow-50">Online Login</h2>
+                <p className="text-gray-500 dark:text-navy-300">Masuk sebagai Owner, Admin, atau Staff</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-1">Username</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User size={18} className="text-gray-400" />
+                      <User size={18} className="text-gray-400 dark:text-navy-400" />
                     </div>
                     <input
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="pl-10 w-full px-4 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none dark:bg-navy-800 dark:text-white dark:placeholder-navy-400"
                       placeholder="Username (e.g. owner, admin, staff)"
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-navy-200 mb-1">Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock size={18} className="text-gray-400" />
+                      <Lock size={18} className="text-gray-400 dark:text-navy-400" />
                     </div>
                     <input
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="pl-10 w-full px-4 py-2 border border-gray-300 dark:border-navy-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none dark:bg-navy-800 dark:text-white dark:placeholder-navy-400"
                       placeholder="••••••••"
                       required
                     />
@@ -192,7 +192,7 @@ const LoginScreen = () => {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center justify-center mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center">
@@ -209,7 +209,7 @@ const LoginScreen = () => {
                     </>
                   )}
                 </button>
-                <p className="text-xs text-gray-400 mt-4 text-center">
+                <p className="text-xs text-gray-400 dark:text-navy-400 mt-4 text-center">
                   Hubungi Owner untuk mendapatkan akses akun.
                 </p>
               </div>
@@ -219,7 +219,7 @@ const LoginScreen = () => {
       </div>
       
       {/* Watermark */}
-      <div className="absolute bottom-4 right-4 text-xs text-gray-400 font-medium">
+      <div className="absolute bottom-4 right-4 text-xs text-gray-400 dark:text-navy-500 font-medium">
         Made by HandityaGilang(Garda)
       </div>
     </div>

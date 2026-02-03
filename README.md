@@ -1,48 +1,48 @@
-# Aplikasi Isvara Inventory Manager V.1.0.4
-ONLINE MODE TIDAK UNTUK PUBLIK SEMENTARA
+# Isvara Inventory Manager
 
-Aplikasi desktop untuk manajemen inventory baju yang dibangun dengan Electron, React, dan SQLite. Aplikasi ini mendukung import/export Excel/CSV, manajemen SKU, sistem peringatan stok, dan dashboard lengkap.
+Isvara Inventory Manager adalah aplikasi desktop manajemen inventaris modern yang dirancang untuk membantu UMKM mengelola stok, penjualan, dan keuntungan dengan mudah dan efisien.
 
-## Fitur Utama
+## 🚀 Fitur Utama
 
-- ✅ **Import/Export Excel/CSV**: Support file .xlsx dan .csv
-- ✅ **Manajemen SKU**: Form lengkap dengan validasi duplikat
-- ✅ **Sistem Peringatan**: Warna otomatis untuk stok menipis/habis
-- ✅ **Kalkulasi Otomatis**: Total stok dan nett receive
-- ✅ **Dashboard**: Ringkasan inventory dan statistik
-- ✅ **Filter**: Filter berdasarkan status dan kategori
-- ✅ **Validasi**: Pencegahan duplikat SKU dan Style Name
+### 1. Dual Mode (Offline & Online)
+*   **Offline Mode:** Bekerja sepenuhnya tanpa internet. Data disimpan secara lokal di perangkat Anda (menggunakan SQL.js). Ideal untuk keamanan data dan kecepatan.
+*   **Online Mode:** Sinkronisasi real-time dengan database cloud (Supabase). Memungkinkan kolaborasi tim dari berbagai lokasi.
 
-## Teknologi
+### 2. Manajemen Stok Komprehensif
+*   Tambah, edit, dan hapus produk dengan mudah.
+*   **Multi-Image Support:** Unggah hingga 5 gambar per produk dengan kompresi otomatis untuk performa optimal.
+*   Pelacakan stok real-time dengan indikator visual (Stok Rendah).
 
-- **Frontend**: React 18 + Tailwind CSS
-- **Desktop**: Electron
-- **Database**: SQLite
-- **File Processing**: SheetJS (xlsx)
-- **Icons**: Lucide React
+### 3. Pencatatan Penjualan & Laporan
+*   Catat transaksi penjualan harian.
+*   **Kalkulator Keuntungan:** Hitung margin keuntungan bersih setelah biaya admin marketplace (Shopee, Tokopedia, TikTok Shop, dll).
+*   Dashboard interaktif dengan ringkasan: Total Item, Total Nilai Aset, dan Peringatan Stok.
 
-## Instalasi
+### 4. Manajemen Pengguna (Role-Based Access)
+*   **OWNER:** Akses penuh ke semua fitur, pengaturan, dan manajemen user.
+*   **ADMIN:** Akses ke inventaris dan pengaturan operasional.
+*   **STAFF:** Akses terbatas untuk operasional harian (input stok/penjualan).
 
-1. **Pastikan Node.js terinstall** (versi 16 atau lebih baru)
-   ```bash
-   node --version
-   ```
+### 5. Import & Export Data
+*   Dukungan Import data massal dari file Excel (.xlsx).
+*   Export laporan stok dan penjualan ke Excel untuk analisis lebih lanjut.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## 🛠️ Teknologi yang Digunakan
+*   **Frontend:** React.js, Tailwind CSS
+*   **Backend/Runtime:** Electron (untuk aplikasi desktop)
+*   **Database:** 
+    *   Lokal: SQL.js (SQLite versi WebAssembly)
+    *   Cloud: Supabase (PostgreSQL)
+*   **Icons:** Lucide React
 
-3. **Jalankan aplikasi dalam mode development**
-   ```bash
-   npm run electron-dev
-   ```
+## 📦 Cara Install
+1.  Unduh file `.zip` rilis terbaru.
+2.  Ekstrak folder tersebut.
+3.  Jalankan `Isvara Inventory Manager.exe`.
+4.  Login menggunakan akun yang tersedia (atau Local Owner untuk offline).
 
-4. **Build untuk production**
-   ```bash
-   npm run build
-   npm run dist
-   ```
+## 🔒 Keamanan
+Aplikasi ini mendukung autentikasi yang aman dengan pemisahan hak akses pengguna, memastikan data sensitif (seperti harga modal) hanya bisa dilihat oleh pihak yang berwenang.
 
 ## Struktur Database
 
@@ -92,6 +92,7 @@ src/
     ProductForm.js
     ImportExport.js
     Sidebar.js
+
   database/       # Koneksi database
     db.js
   App.js          # Komponen utama
@@ -107,3 +108,7 @@ src/
 ## License
 
 Made By Handitya Gilang (Garda) 
+=======
+---
+*Dibuat oleh HandityaGilang(Garda)*
+>>>>>>> Prototype-UI
